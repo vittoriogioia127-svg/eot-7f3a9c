@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EOT Claim Vault — Cahier des Charges v0.2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBFAF7; --surface:#FFFFFF; --surface-2:#F5F3EC;
+    --ink:#15171C; --muted:#5F646D; --faint:#9AA0A8;
+    --hairline:#E5E2DA; --hairline-2:#EFEDE6;
+    --accent:#14564A; --accent-ink:#0E3F36; --accent-soft:#E7F0EC;
+    --green:#1F8A5B; --amber:#B07207; --red:#BE3A2B;
+    --green-bg:#E9F4EE; --amber-bg:#FAF1DF; --red-bg:#F8E9E6;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Inter Tight",system-ui,sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .page{max-width:1320px;margin:0 auto;padding:54px clamp(20px,4vw,56px) 110px;}
+  h1,h2,h3,h4{font-family:"Bricolage Grotesque",sans-serif;color:var(--ink);margin:0;line-height:1.12;letter-spacing:-0.015em;}
+  .mono{font-family:"JetBrains Mono",monospace;}
+  p{margin:0 0 13px;}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft);}
+  strong{font-weight:600;}
+  .prose{max-width:76ch;}
+  .langbar{position:fixed;top:16px;right:16px;z-index:60;display:flex;background:var(--surface);border:1px solid var(--hairline);border-radius:24px;padding:3px;box-shadow:0 3px 14px rgba(0,0,0,0.07);}
+  .lang-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;border:none;background:transparent;color:var(--muted);padding:5px 14px;border-radius:20px;cursor:pointer;letter-spacing:0.06em;}
+  .lang-btn.active{background:var(--accent);color:#fff;}
+  .cover{border-bottom:2px solid var(--ink);padding-bottom:32px;margin-bottom:46px;}
+  .mark{display:flex;gap:4px;align-items:flex-end;margin-bottom:26px;}
+  .mark i{width:26px;height:7px;background:var(--accent);border-radius:3px;display:block;}
+  .mark i:nth-child(2){width:20px;opacity:.78;}
+  .mark i:nth-child(3){width:14px;opacity:.55;}
+  .eyebrow{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;}
+  .cover h1{font-size:clamp(40px,6vw,60px);font-weight:700;margin-bottom:14px;}
+  .cover .lede{font-size:19px;color:var(--muted);max-width:760px;font-weight:400;}
+  .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px 40px;margin-top:32px;max-width:1100px;}
+  .meta .k{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--faint);margin-bottom:4px;}
+  .meta .v{font-size:14px;font-weight:500;line-height:1.35;}
+  .toc{background:var(--surface);border:1px solid var(--hairline);border-radius:12px;padding:24px 28px;margin-bottom:54px;}
+  .toc h4{font-size:12px;font-family:"JetBrains Mono",monospace;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;font-weight:600;}
+  .toc ol{margin:0;padding:0;list-style:none;columns:3;column-gap:48px;}
+  .toc li{margin-bottom:7px;font-size:13.5px;break-inside:avoid;}
+  .toc li a{color:var(--ink);border:none;}
+  .toc li span{font-family:"JetBrains Mono",monospace;color:var(--accent);font-size:12px;margin-right:9px;}
+  section{margin-bottom:50px;}
+  .sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:1px solid var(--hairline);padding-bottom:12px;margin-bottom:20px;}
+  .sec-n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--accent);font-weight:600;flex-shrink:0;}
+  .sec-head h2{font-size:25px;font-weight:600;}
+  h3{font-size:16.5px;font-weight:600;margin:24px 0 8px;}
+  h4.sub{font-size:13.5px;font-weight:600;color:var(--accent-ink);margin:18px 0 8px;}
+  ul.clean{margin:0 0 13px;padding-left:20px;}
+  ul.clean li{margin-bottom:6px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px 44px;align-items:start;}
+  .cols2{columns:2;column-gap:44px;margin:0 0 13px;padding-left:20px;}
+  .cols2 li{margin-bottom:6px;break-inside:avoid;}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+  table{width:100%;border-collapse:collapse;margin:12px 0 18px;font-size:13.5px;background:var(--surface);border:1px solid var(--hairline);border-radius:10px;overflow:hidden;}
+  th{text-align:left;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--surface-2);padding:10px 14px;border-bottom:1px solid var(--hairline);}
+  td{padding:10px 14px;border-bottom:1px solid var(--hairline-2);vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  td.mono{font-size:12.5px;color:var(--accent-ink);}
+  .tbl-wrap{overflow-x:auto;}
+  .badge{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:0.04em;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+  .b-val{background:var(--green-bg);color:var(--green);}
+  .b-prop{background:var(--amber-bg);color:var(--amber);}
+  .callout{border:1px solid var(--hairline);border-left:3px solid var(--accent);background:var(--surface);border-radius:0 10px 10px 0;padding:15px 20px;margin:0;}
+  .callout.warn{border-left-color:var(--amber);}
+  .callout.crit{border-left-color:var(--red);}
+  .callout .lbl{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:6px;}
+  .callout.warn .lbl{color:var(--amber);}
+  .callout.crit .lbl{color:var(--red);}
+  .callout p:last-child{margin-bottom:0;}
+  .ent{background:var(--surface);border:1px solid var(--hairline);border-radius:11px;padding:16px 18px;break-inside:avoid;}
+  .ent .name{font-family:"Bricolage Grotesque";font-size:15.5px;font-weight:600;color:var(--accent-ink);margin-bottom:5px;}
+  .ent .desc{font-size:13px;color:var(--muted);margin:0;}
+  .chain{background:var(--surface);border:1px solid var(--hairline);border-radius:12px;padding:24px 20px;}
+  .chain-row{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;}
+  .chain-box{flex:1;min-width:150px;background:var(--surface-2);border:1px solid var(--hairline);border-radius:9px;padding:13px 14px;text-align:center;}
+  .chain-box.out{background:var(--accent-soft);border-color:#CFE0DA;}
+  .chain-box .n{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;color:var(--accent-ink);}
+  .chain-box .s{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4;}
+  .chain-arrow{display:flex;align-items:center;padding:0 10px;color:var(--accent);font-size:20px;font-weight:700;}
+  .chain-note{font-size:12.5px;color:var(--muted);margin-top:14px;text-align:center;}
+  .rag{display:flex;gap:9px;align-items:flex-start;font-size:13px;margin-bottom:7px;}
+  .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+  .dot.g{background:var(--green);} .dot.a{background:var(--amber);} .dot.r{background:var(--red);}
+  .footer{margin-top:72px;padding-top:20px;border-top:1px solid var(--hairline);font-size:12px;color:var(--faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  @media print{
+    @page{margin:15mm 13mm;}
+    body{background:#fff;font-size:11pt;}
+    .page{max-width:none;padding:0;}
+    .langbar{display:none;}
+    .toc{break-after:page;}
+    .ent,.callout,.chain,tr{break-inside:avoid;}
+    .sec-head{break-after:avoid;} h3,h4.sub{break-after:avoid;}
+    a{color:var(--ink);border:none;}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  }
+  @media (max-width:820px){ .grid2{grid-template-columns:1fr;} .cols2{columns:1;} .toc ol{columns:2;} }
+  @media (max-width:560px){ .toc ol{columns:1;} }
+
+  .confbar{display:flex;gap:0;align-items:flex-start;background:#FBECE9;border:1px solid #E7C3BC;border-left:4px solid var(--red);border-radius:8px;padding:11px 16px;margin-bottom:30px;font-size:12px;line-height:1.45;color:#7A2A1E;}
+  .confbar strong{color:var(--red);font-weight:700;}
+  @media print{ .confbar{margin-bottom:22px;} }
+</style>
+</head>
+<body>
+
+<div class="langbar">
+  <button id="btn-fr" class="lang-btn active" onclick="setLang('fr')">FR</button>
+  <button id="btn-en" class="lang-btn" onclick="setLang('en')">EN</button>
+</div>
+
+<div id="doc-fr" class="page">
+
+
+
+  <div class="cover">
+    <div class="mark"><i></i><i></i><i></i></div>
+    <div class="eyebrow">Cahier des charges &nbsp;·&nbsp; v0.2 &nbsp;·&nbsp; Brouillon pour validation</div>
+    <h1>EOT Claim Vault</h1>
+    <p class="lede">Une couche de réconciliation pour la collecte, la justification et l'assemblage des claims EOT. Un seul endroit traçable où chaque coût claimable rencontre sa preuve, et où chaque événement contractuel peut être testé contre le registre.</p>
+    <div class="meta">
+      <div><div class="k">Sujet</div><div class="v">Claims EOT (Extension of Time)</div></div>
+      <div><div class="k">Préparé par</div><div class="v">Vittorio Gioia</div></div>
+      <div><div class="k">Propriétaire métier</div><div class="v">Nicolas Durame<br><span style="color:var(--faint);font-size:12px;">Directeur Contract Management</span></div></div>
+      <div><div class="k">Sponsor finance</div><div class="v">Damien Prost<br><span style="color:var(--faint);font-size:12px;">CFO Asie</span></div></div>
+      <div><div class="k">Date</div><div class="v">18 juin 2026</div></div>
+      <div><div class="k">Statut</div><div class="v">Brouillon, en attente de validation</div></div>
+    </div>
+  </div>
+
+  <div class="toc">
+    <h4>Sommaire</h4>
+    <ol>
+      <li><a href="#fr0"><span>00</span>Hypothèses &amp; décisions</a></li>
+      <li><a href="#fr1"><span>01</span>Contexte &amp; problématique</a></li>
+      <li><a href="#fr2"><span>02</span>Objectifs &amp; critères de succès</a></li>
+      <li><a href="#fr3"><span>03</span>Périmètre</a></li>
+      <li><a href="#fr4"><span>04</span>Concept clé : registre vs claim</a></li>
+      <li><a href="#fr5"><span>05</span>Parties prenantes &amp; rôles</a></li>
+      <li><a href="#fr6"><span>06</span>Ce que la solution capture</a></li>
+      <li><a href="#fr7"><span>07</span>Besoins fonctionnels</a></li>
+      <li><a href="#fr8"><span>08</span>Flux de travail</a></li>
+      <li><a href="#fr9"><span>09</span>Accès &amp; confidentialité</a></li>
+      <li><a href="#fr10"><span>10</span>Moteur de complétude</a></li>
+      <li><a href="#fr11"><span>11</span>Intégrité des preuves</a></li>
+      <li><a href="#fr12"><span>12</span>Restitution, export &amp; BI</a></li>
+      <li><a href="#fr13"><span>13</span>Sécurité &amp; gouvernance</a></li>
+      <li><a href="#fr14"><span>14</span>Contraintes</a></li>
+      <li><a href="#fr15"><span>15</span>Feuille de route</a></li>
+      <li><a href="#fr16"><span>16</span>Points ouverts</a></li>
+    </ol>
+  </div>
+
+  <section id="fr0">
+    <div class="sec-head"><span class="sec-n">00</span><h2>Hypothèses &amp; décisions</h2></div>
+    <p class="prose">Chaque choix structurant est tracé ici, pour transparence. Les éléments <span class="badge b-val">VALIDÉ</span> ont été confirmés. Les éléments <span class="badge b-prop">PROPOSÉ</span> sont des hypothèses de départ à valider avant construction.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:52px;">Réf</th><th>Décision</th><th style="width:92px;">Statut</th><th style="width:130px;">Source</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">D-1</td><td><strong>Source de vérité = couche de réconciliation.</strong> Chaque partie prenante garde son propre registre ; l'outil unifie, trace et permet de challenger l'ensemble.</td><td><span class="badge b-val">VALIDÉ</span></td><td>Direction + Vittorio</td></tr>
+        <tr><td class="mono">D-2</td><td>La maille de saisie est <strong>la facture</strong>. Une entrée = une dépense, avec 1 à N justificatifs.</td><td><span class="badge b-val">VALIDÉ</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-3</td><td>Chaque ligne de coût porte un <strong>cost code</strong>, en plus de sa catégorie 5.2.1.x.</td><td><span class="badge b-val">VALIDÉ</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-4</td><td><strong>Validation à deux niveaux</strong> : le responsable saisit, le consolidateur valide.</td><td><span class="badge b-val">VALIDÉ</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-5</td><td><strong>Multi-devise</strong>, avec taux et source FX documentés.</td><td><span class="badge b-val">VALIDÉ</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-6</td><td>Répartition par partie prenante : Finance, RH/Paie, Achats, Admin site, IT.</td><td><span class="badge b-val">VALIDÉ</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-7</td><td>Volume de l'ordre du <strong>millier de lignes</strong>, donc import en masse au périmètre.</td><td><span class="badge b-val">VALIDÉ</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-8</td><td>Les contributeurs ont des <strong>comptes avec rôles</strong>.</td><td><span class="badge b-val">VALIDÉ</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-9</td><td>Le pilote démarre <strong>à vide</strong>, sans reprise d'historique.</td><td><span class="badge b-val">VALIDÉ</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-10</td><td><strong>Extraction assistée des PDF et tableaux BI reportés en phase 2.</strong> La solution est conçue dès le départ pour les accueillir et pour être compatible Power BI.</td><td><span class="badge b-val">VALIDÉ</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-11</td><td><strong>La conformité (cyber / CDS) avance en parallèle</strong>, sans bloquer la conception. La mise en production avec de vraies données RH est conditionnée à l'accord CDS ; le pilote peut tourner sur des données de test.</td><td><span class="badge b-val">VALIDÉ</span></td><td>Damien</td></tr>
+        <tr><td class="mono">H-A</td><td><strong>Registre neutre, claim assemblé.</strong> Le registre enregistre tous les coûts de façon neutre. Un événement de claim n'absorbe pas les coûts ; une sélection le relie aux lignes du registre qu'il retient. Une ligne peut servir zéro, un ou plusieurs événements.</td><td><span class="badge b-val">VALIDÉ</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">H-B</td><td><strong>L'éligibilité est contextuelle.</strong> Elle se décide par personne et par événement, pas comme une étiquette globale. Une personne porte ses attributs stables (expat ou local, poste) ; le claimable se décide au niveau de l'événement.</td><td><span class="badge b-val">VALIDÉ</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">H-C</td><td><strong>La personne est une entité à part entière</strong>, et une facture peut se découper par personne, pour rendre le filtrage nominatif opérationnel.</td><td><span class="badge b-val">VALIDÉ</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">H-D</td><td><strong>Isolation des données RH.</strong> Noms, paie et salaires sont restreints aux rôles autorisés, l'accès est appliqué sur la donnée elle-même, avec un historique d'accès inaltérable.</td><td><span class="badge b-val">VALIDÉ</span></td><td>Damien</td></tr>
+        <tr><td class="mono">A-1</td><td>Règles d'exhaustivité documentaire par catégorie (voir section 10). Jeu de départ, à valider avec Damien, Nicolas, Sharizal, Racim et Simon.</td><td><span class="badge b-prop">PROPOSÉ</span></td><td>Proposition</td></tr>
+        <tr><td class="mono">A-2</td><td>Bureau uniquement. Pas de support mobile ni hors-ligne.</td><td><span class="badge b-prop">PROPOSÉ</span></td><td>Vittorio</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section id="fr1">
+    <div class="sec-head"><span class="sec-n">01</span><h2>Contexte &amp; problématique</h2></div>
+    <div class="grid2">
+      <div>
+        <p>Colas Rail doit justifier les coûts liés aux claims EOT sur ses contrats ferroviaires. Les têtes de coûts recouvrables sont définies par le contrat (clause 5.2.1 : personnel indirect, bonds et assurances, logement, loyers et utilities, licences IT, bureaux et entrepôts, transport, matériel, frais de siège, financement, profit).</p>
+        <p>Aujourd'hui la donnée est fragmentée. Chaque partie prenante tient son propre registre, dans son format. Les justificatifs sont éparpillés. Quand un événement contractuel survient et qu'un claim doit être monté, les coûts et leurs preuves sont réassemblés dans l'urgence, et les manques apparaissent trop tard.</p>
+        <p>Un claim se monte en comparant le planning de référence au planning impacté, en analysant les écarts de mobilisation des ressources (prévu, réel, mobilisé), puis en décidant ce qui est claimable. L'éligibilité se décide en grande partie sur les noms des personnes présentes sur les factures (expat ou local, éligible ou non). Sans une trace de preuves complète, traçable et infalsifiable, du coût claimable est perdu ou contesté.</p>
+      </div>
+      <div class="callout">
+        <div class="lbl">Le vrai produit</div>
+        <p>Ce n'est pas une base de données de coûts. C'est un système de justification de preuves. Son rôle : garantir qu'au jour de la soumission d'un claim, chaque montant a derrière lui un document daté, traçable et non altéré. La complétude des justificatifs et la traçabilité sont ce qui fait gagner ou perdre un claim.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="fr2">
+    <div class="sec-head"><span class="sec-n">02</span><h2>Objectifs &amp; critères de succès</h2></div>
+    <div class="grid2">
+      <div>
+        <h4 class="sub">Objectifs</h4>
+        <ul class="clean">
+          <li>Collecter en continu les coûts liés aux claims EOT, mois après mois, auprès de toutes les parties prenantes, en un seul endroit.</li>
+          <li>Relier chaque coût à ses justificatifs, avec un contrôle d'exhaustivité par catégorie.</li>
+          <li>Garder le registre neutre et tester n'importe quel événement contractuel contre lui pour isoler les lignes claimables.</li>
+          <li>Protéger les données RH confidentielles derrière un accès strict par rôle.</li>
+          <li>Rendre tous les coûts et métadonnées explorables, filtrables et exportables.</li>
+          <li>Alimenter une base sécurisée exposant un accès en lecture seule pour Power BI.</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="sub">Critères de succès du pilote</h4>
+        <ul class="clean">
+          <li>Une période complète collectée de bout en bout, sur au moins trois groupes de catégories, justificatifs joints et validés.</li>
+          <li>Le moteur de complétude détecte correctement un manque volontaire (saisie manquante, justificatif manquant, délai dépassé).</li>
+          <li>Un dossier de claim assemblé depuis le registre, avec éligibilité par personne.</li>
+          <li>Un export filtré produit depuis une sélection de métadonnées.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="fr3">
+    <div class="sec-head"><span class="sec-n">03</span><h2>Périmètre</h2></div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:34%;">Dans le périmètre (Phase 1)</th><th style="width:33%;">Reporté (Phase 2)</th><th>Hors périmètre</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Registre des coûts, saisie manuelle et import en masse. Upload et intégrité des justificatifs. Validation à deux niveaux. Découpage par personne et filtrage nominatif. Assemblage des dossiers de claim. Accès par rôle et isolation RH. Moteur de complétude et d'audit. Rappels. Export filtré. Accès BI en lecture seule.</td>
+          <td>Extraction assistée des factures PDF (validée par un humain). Tableaux Power BI. Agent IA d'interrogation du registre en langage naturel.</td>
+          <td>Remplacer la comptabilité ou l'ERP. Construire l'analyse d'écart de planning (fournie par l'équipe claim). Usage mobile et hors-ligne. Intégration directe avec les systèmes de l'Ingénieur ou du client.</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:13px;"><strong>Limite du pilote.</strong> Un contrat, démarrage à vide, un ensemble limité de catégories et de contributeurs, données de test ou anonymisées tant que la validation CDS n'autorise pas les vraies données RH. L'architecture supporte le multi-contrat ; le pilote tourne sur un seul.</p>
+  </section>
+
+  <section id="fr4">
+    <div class="sec-head"><span class="sec-n">04</span><h2>Concept clé : registre vs claim</h2></div>
+    <p class="prose">Le système sépare deux objets. Cette séparation donne à la fois un registre permanent et la logique par événement, sans construire une comptabilité parallèle.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:170px;">Objet</th><th>Rôle</th><th style="width:180px;">Nature</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Registre des coûts</strong></td><td>Enregistre tout en continu et de façon neutre. Une facture = une entrée, avec personne, cost code, catégorie 5.2.1.x, période, montant et justificatifs.</td><td>La source de vérité exhaustive</td></tr>
+        <tr><td><strong>Événement de claim</strong></td><td>Sélectionne dans le registre les lignes claimables pour un événement contractuel donné, chacune avec sa base d'éligibilité.</td><td>Un dossier assemblé par-dessus</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="chain">
+      <div class="chain-row">
+        <div class="chain-box"><div class="n">Coût (entrée)</div><div class="s">une facture<br>1 à N justificatifs</div></div>
+        <div class="chain-arrow">&rarr;</div>
+        <div class="chain-box"><div class="n">Lignes de coût</div><div class="s">découpe par personne<br>ou par poste</div></div>
+        <div class="chain-arrow">&rarr;</div>
+        <div class="chain-box"><div class="n">Sélection claim</div><div class="s">lignes éligibles<br>éligibilité tracée</div></div>
+        <div class="chain-arrow">&rarr;</div>
+        <div class="chain-box out"><div class="n">Événement de claim</div><div class="s">événement contractuel<br>le dossier assemblé</div></div>
+      </div>
+      <div class="chain-note">Le registre ne sait rien des claims. Un événement de claim vient y puiser. Une même ligne peut servir zéro, un ou plusieurs événements.</div>
+    </div>
+  </section>
+
+  <section id="fr5">
+    <div class="sec-head"><span class="sec-n">05</span><h2>Parties prenantes &amp; rôles</h2></div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:210px;">Partie prenante</th><th>Responsabilité</th><th style="width:140px;">Catégories</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Nicolas Durame</strong><br><span style="color:var(--muted);font-size:12px;">Directeur Contract Management</span></td><td>Porte la stratégie de claim EOT et décide ce qui est claimable. Définit les événements contractuels. Propriétaire métier de la solution et destinataire des arbitrages.</td><td>pilotage</td></tr>
+        <tr><td><strong>Damien Prost</strong><br><span style="color:var(--muted);font-size:12px;">CFO Asie</span></td><td>Sponsor finance, budget, confidentialité des données, voie de validation siège et CDS.</td><td>supervision</td></tr>
+        <tr><td><strong>Mohd Sharizal Isa</strong><br><span style="color:var(--muted);font-size:12px;">Cost Controller / Superviseur Contrôle Finance</span></td><td>Pilote aujourd'hui le processus de collecte des coûts EOT (actuellement sous SharePoint). Profil contract par le passé, désormais côté finance : référent du sujet, des règles d'exhaustivité et de la liste des coûts.</td><td>référent process</td></tr>
+        <tr><td>Finance</td><td>Enregistre financement, frais de siège, bonds. Fournit la source FX.</td><td class="mono">5.2.1.2, .9, .10</td></tr>
+        <tr><td>RH / Paie</td><td>Enregistre personnel indirect et logement. Détient le détail nominatif de paie.</td><td class="mono">5.2.1.1, .3</td></tr>
+        <tr><td>Achats</td><td>Enregistre assurances, permis et licences, matériel, transport.</td><td class="mono">5.2.1.2, .7, .8</td></tr>
+        <tr><td>Admin site</td><td>Enregistre loyers et utilities, bureaux et entrepôts.</td><td class="mono">5.2.1.4, .6</td></tr>
+        <tr><td>IT</td><td>Enregistre les licences logicielles.</td><td class="mono">5.2.1.5</td></tr>
+        <tr><td>Consolidateur / QS</td><td>Valide les saisies, mène la revue mensuelle, assemble les dossiers (sous la direction de Nicolas).</td><td>tout (valide)</td></tr>
+        <tr><td>Auditeur</td><td>Audit mensuel de complétude et de conformité. Accès en lecture aux preuves.</td><td>tout (lecture)</td></tr>
+        <tr><td>Racim, Simon</td><td>Valident les items de coûts et la liste des ressources, appuient les tableaux de justification du claim.</td><td>revue</td></tr>
+        <tr><td>Christophe + siège, Jean</td><td>Cohérence avec la Digital Factory et validation siège.</td><td>gouvernance</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:12.5px;color:var(--muted);">Quand deux parties prenantes touchent la même tête de coût (par exemple bonds et assurances), la responsabilité est répartie par type de document et confirmée en P0.</p>
+  </section>
+
+  <section id="fr6">
+    <div class="sec-head"><span class="sec-n">06</span><h2>Ce que la solution capture</h2></div>
+    <div class="cards">
+      <div class="ent"><div class="name">Coût</div><p class="desc">Chaque facture ou dépense, avec sa catégorie, sa période, son cost code et son montant.</p></div>
+      <div class="ent"><div class="name">Justificatifs</div><p class="desc">Un ou plusieurs documents qui prouvent chaque coût.</p></div>
+      <div class="ent"><div class="name">Personnes</div><p class="desc">Le personnel suivi individuellement, pour attribuer les coûts par personne (éligibilité nominative).</p></div>
+      <div class="ent"><div class="name">Périodes</div><p class="desc">Le cycle mensuel. Une période se clôture une fois revue.</p></div>
+      <div class="ent"><div class="name">Événements contractuels</div><p class="desc">Les événements qui sélectionnent dans le registre les lignes claimables.</p></div>
+      <div class="ent"><div class="name">Historique</div><p class="desc">Une trace inaltérable de chaque saisie, modification et validation.</p></div>
+    </div>
+  </section>
+
+  <section id="fr7">
+    <div class="sec-head"><span class="sec-n">07</span><h2>Besoins fonctionnels</h2></div>
+    <p class="prose">Traçabilité vis-à-vis du besoin exprimé. Besoins de collecte C1 à C11, besoin de traitement T1.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:48px;">Réf</th><th>Besoin</th><th>Ce qu'on apporte</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">C1</td><td>Enregistrer tous les coûts liés aux claims avec leurs justificatifs.</td><td>Chaque dépense est enregistrée avec ses justificatifs (1 à N).</td></tr>
+        <tr><td class="mono">C2</td><td>Les justificatifs sont prioritaires.</td><td>Justificatif obligatoire à la soumission, contrôle d'exhaustivité par catégorie.</td></tr>
+        <tr><td class="mono">C3</td><td>Mise à jour mensuelle par plusieurs parties prenantes.</td><td>Cycle mensuel, responsabilité par catégorie, comptes par rôle.</td></tr>
+        <tr><td class="mono">C4</td><td>Contrôle automatique ou audit régulier du flux.</td><td>Moteur de complétude planifié et revue mensuelle d'audit.</td></tr>
+        <tr><td class="mono">C5</td><td>Vérifier l'exhaustivité des supports.</td><td>Matrice de complétude (catégorie &times; période &times; responsable) avec règles documentaires par catégorie.</td></tr>
+        <tr><td class="mono">C6</td><td>Creuser toutes les métadonnées, par catégorie et par métrique.</td><td>Toutes les métadonnées explorables et filtrables, compatibilité Power BI en phase 2.</td></tr>
+        <tr><td class="mono">C7</td><td>Notifications et rappels automatiques.</td><td>Rappels avant échéance, alertes de retard et de validation en attente.</td></tr>
+        <tr><td class="mono">C8</td><td>Tableau de bord très intuitif.</td><td>Tableau de bord opérationnel : ce qui manque, qui est en retard, la distance à un dossier complet.</td></tr>
+        <tr><td class="mono">C9</td><td>Base sécurisée avec une clé sollicitable par Power BI.</td><td>Base sécurisée exposant un accès en lecture seule contrôlé pour Power BI.</td></tr>
+        <tr><td class="mono">C10</td><td>Bureau uniquement.</td><td>Application bureau, sans mobile ni hors-ligne.</td></tr>
+        <tr><td class="mono">C11</td><td>Export facile après sélection de métadonnées.</td><td>Export filtré (CSV, Excel) depuis une sélection.</td></tr>
+        <tr><td class="mono">T1</td><td>Extraire les données clés des factures PDF déposées vers la base.</td><td>Phase 2 : extraction assistée, vérifiée par un humain avant intégration.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section id="fr8">
+    <div class="sec-head"><span class="sec-n">08</span><h2>Flux de travail</h2></div>
+    <div class="grid2">
+      <div>
+        <h3>W1 &nbsp; Saisie (au fil de l'eau)</h3>
+        <p>Un contributeur ouvre la période courante, crée une entrée dans une catégorie dont il a la charge, renseigne montant, devise et cost code, joint un ou plusieurs justificatifs, découpe l'entrée par personne si besoin, puis soumet. Les entrées peuvent aussi être importées en masse (Excel, CSV).</p>
+        <h3>W2 &nbsp; Validation (deux niveaux)</h3>
+        <p>Le contributeur soumet. Le consolidateur revoit puis valide ou rejette avec motif. À la validation, l'entrée se verrouille et l'action est tracée. La période se verrouille après sa revue mensuelle.</p>
+        <h3>W3 &nbsp; Assemblage du claim</h3>
+        <p>Le consolidateur crée un événement de claim (fenêtre, sections impactées, références planning de référence et impacté). Il interroge le registre filtré par fenêtre, catégorie et personne, sélectionne les lignes, renseigne la base d'éligibilité de chacune, puis confirme. Résultat : un dossier de claim adossé aux preuves vivantes du registre.</p>
+      </div>
+      <div>
+        <h3>W4 &nbsp; Audit et complétude</h3>
+        <p>Un traitement planifié calcule la matrice de complétude et les contrôles d'intégrité, puis lève alertes et notifications. Un auditeur dédié réalise une revue de conformité mensuelle par-dessus.</p>
+        <h3>W5 &nbsp; Extraction PDF (Phase 2)</h3>
+        <p>Un PDF déposé est lu vers une fiche en attente de revue. Le responsable vérifie les champs extraits face au document, corrige, puis intègre l'entrée avec le justificatif.</p>
+        <div class="callout crit" style="margin-top:16px;">
+          <div class="lbl">Non négociable</div>
+          <p>Une donnée financière de claim n'est jamais intégrée automatiquement. Un montant faux injecté automatiquement détruit la crédibilité devant l'Ingénieur. La machine assiste, l'humain engage.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="fr9">
+    <div class="sec-head"><span class="sec-n">09</span><h2>Accès &amp; confidentialité</h2></div>
+    <p class="prose">Cette section répond à l'exigence sur la confidentialité RH et l'accès restrictif.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:160px;">Rôle</th><th>Voit</th><th>Peut faire</th></tr></thead>
+      <tbody>
+        <tr><td>Admin</td><td>Tout</td><td>Gère utilisateurs, catégories, périodes. Ne modifie pas l'historique d'audit.</td></tr>
+        <tr><td>Contributeur</td><td>Ses catégories uniquement. Son détail nominatif s'il est RH.</td><td>Crée et édite ses brouillons, joint des justificatifs, soumet.</td></tr>
+        <tr><td>Consolidateur</td><td>Toutes catégories, tout le détail nominatif.</td><td>Valide, rejette, verrouille les périodes, assemble les claims.</td></tr>
+        <tr><td>Auditeur</td><td>Toutes les entrées et preuves, détail nominatif.</td><td>Lecture seule. Revue mensuelle.</td></tr>
+        <tr><td>Lecteur</td><td>Agrégats uniquement, pas de détail nominatif.</td><td>Lecture des agrégats et tableaux de bord.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <ul class="cols2">
+      <li>Les données nominatives (personnes, paie) sont restreintes aux rôles RH, consolidateur, auditeur et admin.</li>
+      <li>Les restrictions sont appliquées sur la donnée elle-même, pas seulement masquées dans l'interface.</li>
+      <li>Chaque accès à une donnée sensible et chaque modification sont tracés.</li>
+      <li>Moindre privilège partout. L'accès BI en lecture seule ne voit pas les données nominatives brutes, sauf autorisation explicite.</li>
+    </ul>
+  </section>
+
+  <section id="fr10">
+    <div class="sec-head"><span class="sec-n">10</span><h2>Moteur de complétude</h2></div>
+    <p class="prose">C'est le vrai produit. Le moteur calcule une matrice catégorie &times; période &times; responsable et applique des règles.</p>
+    <div class="rag"><span class="dot r"></span><span>Catégorie sans saisie sur la période. Saisie avec un montant mais sans justificatif. Empreinte d'un document modifiée.</span></div>
+    <div class="rag"><span class="dot a"></span><span>Saisie soumise mais non validée au-delà du délai. Date de document hors période. Type de justificatif requis par la règle de catégorie manquant.</span></div>
+    <div class="rag"><span class="dot g"></span><span>Saisie validée, justificatifs complets selon la règle, intégrité intacte.</span></div>
+    <h4 class="sub">Règles d'exhaustivité par catégorie (A-1, à valider)</h4>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:250px;">Catégorie</th><th>Documents minimum pour « complet »</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">5.2.1.1 Personnel indirect</td><td>Bulletin de paie + preuve d'emploi, par personne. Feuille de temps si prorata temporel.</td></tr>
+        <tr><td class="mono">5.2.1.2 Bonds, assurances, permis, licences</td><td>Police ou certificat, facture, preuve de paiement.</td></tr>
+        <tr><td class="mono">5.2.1.3 Logement du personnel</td><td>Bail ou contrat, facture mensuelle, preuve de paiement. Par personne si prorata.</td></tr>
+        <tr><td class="mono">5.2.1.4 Loyers et utilities</td><td>Bail ou contrat, facture, preuve de paiement.</td></tr>
+        <tr><td class="mono">5.2.1.5 Licences logicielles IT</td><td>Facture ou abonnement, preuve de paiement.</td></tr>
+        <tr><td class="mono">5.2.1.6 Bureaux et entrepôts</td><td>Contrat de location, facture, preuve de paiement.</td></tr>
+        <tr><td class="mono">5.2.1.7 Transport</td><td>Contrat ou bon de commande, facture, preuve de paiement. Affectation chauffeur ou véhicule si nominatif.</td></tr>
+        <tr><td class="mono">5.2.1.8 Matériel et équipement</td><td>Facture de location ou d'achat, preuve de paiement. Entrée/sortie de location ou feuille de suivi.</td></tr>
+        <tr><td class="mono">5.2.1.9 Frais de siège</td><td>Base d'allocation ou calcul, extrait comptable justificatif.</td></tr>
+        <tr><td class="mono">5.2.1.10 Coûts de financement</td><td>Relevé de facilité, calcul d'intérêts, preuve bancaire.</td></tr>
+        <tr><td class="mono">5.2.1.11 Profit</td><td>Pourcentage calculé selon le mécanisme contractuel. Pas de facture, référence à la formule.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section id="fr11">
+    <div class="sec-head"><span class="sec-n">11</span><h2>Intégrité des preuves</h2></div>
+    <div class="grid2">
+      <div>
+        <ul class="clean">
+          <li>Chaque document reçoit une empreinte à l'upload. Toute modification ultérieure est détectable.</li>
+          <li>Conservation en écriture unique : une correction ajoute une nouvelle version, elle n'écrase jamais.</li>
+          <li>Une empreinte recalculée qui ne correspond plus déclenche une alerte d'intégrité.</li>
+          <li>L'historique complet permet de prouver, en cas de litige, qu'aucun document n'a été altéré ou antidaté.</li>
+        </ul>
+      </div>
+      <div class="callout warn">
+        <div class="lbl">Pourquoi ça compte</div>
+        <p>Beaucoup de contrats exigent des records contemporains, parfois tenus dans une forme agréée avec l'Ingénieur. Savoir si le format doit être validé côté client est une question commerciale à confirmer. De bons records contemporains peuvent eux-mêmes être une obligation contractuelle.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="fr12">
+    <div class="sec-head"><span class="sec-n">12</span><h2>Restitution, export &amp; BI</h2></div>
+    <ul class="cols2">
+      <li><strong>Tableau de bord opérationnel</strong> : complétude (RAG), totaux à date par catégorie et période, responsables en retard, couverture du claim.</li>
+      <li><strong>Export filtré</strong> : sélection sur n'importe quelle métadonnée (catégorie, période, contributeur, fournisseur, type de document, tranche de montant, statut) puis export CSV ou Excel.</li>
+      <li><strong>Accès BI</strong> : un accès en lecture seule contrôlé alimente Power BI, à l'écart des données nominatives brutes sauf autorisation.</li>
+      <li><strong>Vues pré-construites</strong> pour les coupes les plus fréquentes.</li>
+    </ul>
+  </section>
+
+  <section id="fr13">
+    <div class="sec-head"><span class="sec-n">13</span><h2>Sécurité &amp; gouvernance</h2></div>
+    <p class="prose">La conformité avance en chantier parallèle pour ne pas bloquer la conception. Le développement se fait conformité-ready pendant que la validation tourne.</p>
+    <ul class="cols2">
+      <li>Isolation RH par rôle, historique d'accès inaltérable, moindre privilège (section 9).</li>
+      <li>Résidence des données : la région d'hébergement est à confirmer avec CDS (une région européenne est l'option probable).</li>
+      <li>Voie de validation CDS et siège : pilotée via Damien, avec Jean et Christophe pour la cohérence Digital Factory. Sharizal, Racim et Simon valident la liste des coûts et des ressources.</li>
+      <li>La mise en production avec de vraies données RH est conditionnée à l'accord CDS. Le pilote peut tourner sur des données de test jusque-là.</li>
+      <li>La solution héberge des données RH et financières confidentielles. Elle est traitée comme sensible dès le départ, pas après coup.</li>
+    </ul>
+  </section>
+
+  <section id="fr14">
+    <div class="sec-head"><span class="sec-n">14</span><h2>Contraintes</h2></div>
+    <ul class="cols2">
+      <li>Bureau uniquement, optimisé pour grand écran.</li>
+      <li>Des milliers de lignes : l'outil reste performant à ce volume.</li>
+      <li>Import en masse Excel ou CSV pour les entrées, avec un aperçu de validation avant intégration.</li>
+      <li>Multi-devise avec taux et source FX documentés, tous les montants aussi stockés en PHP.</li>
+      <li>Accessible au clavier, focus visible, mouvement réduit respecté.</li>
+    </ul>
+  </section>
+
+  <section id="fr15">
+    <div class="sec-head"><span class="sec-n">15</span><h2>Feuille de route</h2></div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:60px;">Phase</th><th>Contenu</th><th style="width:200px;">Jalon</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">P0</td><td>Verrouillage de la taxonomie, des cost codes, des règles d'exhaustivité et du RACI.</td><td>Nicolas, Damien, Sharizal, Racim, Simon</td></tr>
+        <tr><td class="mono">P1</td><td>Prototype visuel validé. Sert aussi de support de présentation interne.</td><td>Validation Vittorio</td></tr>
+        <tr><td class="mono">P2</td><td>Saisie et registre des coûts.</td><td>Une saisie de bout en bout</td></tr>
+        <tr><td class="mono">P3</td><td>Fondation sécurisée et contrôle d'accès.</td><td>Test d'intégrité</td></tr>
+        <tr><td class="mono">P4</td><td>Validation et import en masse.</td><td>Validation à deux niveaux</td></tr>
+        <tr><td class="mono">P5</td><td>Moteur de complétude et tableau de bord.</td><td>Un écart détecté</td></tr>
+        <tr><td class="mono">P6</td><td>Assemblage des dossiers de claim et éligibilité nominative.</td><td>Un dossier assemblé</td></tr>
+        <tr><td class="mono">P7</td><td>Export et accès BI.</td><td>Export depuis une sélection</td></tr>
+        <tr><td class="mono">P8</td><td>Pilote sur une période, un cluster, données de test.</td><td>Boucle complète validée</td></tr>
+        <tr><td class="mono">P9+</td><td>Phase 2 : extraction PDF, tableaux Power BI, agent IA d'interrogation.</td><td>Après le pilote</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section id="fr16">
+    <div class="sec-head"><span class="sec-n">16</span><h2>Points ouverts &amp; dépendances</h2></div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:48px;">Réf</th><th>Question</th><th style="width:180px;">Responsable</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">O-1</td><td>Calendrier de validation CDS et région d'hébergement. Le pilote peut-il tourner sur de vraies données ou doit-il d'abord utiliser des données de test.</td><td>Damien, CDS</td></tr>
+        <tr><td class="mono">O-2</td><td>Valider la liste complète des coûts et ressources contre le contrat, confirmer la nomenclature de cost codes.</td><td>Nicolas, Damien, Sharizal, Racim, Simon</td></tr>
+        <tr><td class="mono">O-3</td><td>Confirmer les règles d'exhaustivité par catégorie (A-1).</td><td>Nicolas, Sharizal, Racim</td></tr>
+        <tr><td class="mono">O-4</td><td>Source unique du taux FX et sa documentation.</td><td>Finance</td></tr>
+        <tr><td class="mono">O-5</td><td>Qui est l'auditeur mensuel dédié.</td><td>Nicolas, Damien</td></tr>
+        <tr><td class="mono">O-6</td><td>Source et format de l'analyse planning de référence vs impacté qui alimente les événements de claim.</td><td>Équipe claim, Racim</td></tr>
+        <tr><td class="mono">O-7</td><td>Savoir si le format des records doit être agréé avec l'Ingénieur ou le client.</td><td>Contract Management</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <div class="footer">
+    <span>EOT Claim Vault — Cahier des charges v0.2</span>
+    <span>Brouillon pour validation · 18 juin 2026 · Confidentiel</span>
+  </div>
+
+</div>
+
+<div id="doc-en" class="page" style="display:none;">
+
+
+
+  <div class="cover">
+    <div class="mark"><i></i><i></i><i></i></div>
+    <div class="eyebrow">Specification &nbsp;·&nbsp; v0.2 &nbsp;·&nbsp; Draft for validation</div>
+    <h1>EOT Claim Vault</h1>
+    <p class="lede">A reconciliation layer for EOT cost collection, substantiation and claim assembly. One traceable place where every claimable cost meets its supporting evidence, and where each contractual event can be tested against the ledger.</p>
+    <div class="meta">
+      <div><div class="k">Subject</div><div class="v">EOT (Extension of Time) claims</div></div>
+      <div><div class="k">Prepared by</div><div class="v">Vittorio Gioia</div></div>
+      <div><div class="k">Business owner</div><div class="v">Nicolas Durame<br><span style="color:var(--faint);font-size:12px;">Director, Contract Management</span></div></div>
+      <div><div class="k">Finance sponsor</div><div class="v">Damien Prost<br><span style="color:var(--faint);font-size:12px;">CFO Asia</span></div></div>
+      <div><div class="k">Date</div><div class="v">18 June 2026</div></div>
+      <div><div class="k">Status</div><div class="v">Draft, pending validation</div></div>
+    </div>
+  </div>
+
+  <div class="toc">
+    <h4>Contents</h4>
+    <ol>
+      <li><a href="#en0"><span>00</span>Hypotheses &amp; Decisions</a></li>
+      <li><a href="#en1"><span>01</span>Context &amp; Problem</a></li>
+      <li><a href="#en2"><span>02</span>Objectives &amp; Success Criteria</a></li>
+      <li><a href="#en3"><span>03</span>Scope</a></li>
+      <li><a href="#en4"><span>04</span>Core Concept: Ledger vs Claim</a></li>
+      <li><a href="#en5"><span>05</span>Stakeholders &amp; Roles</a></li>
+      <li><a href="#en6"><span>06</span>What the Solution Captures</a></li>
+      <li><a href="#en7"><span>07</span>Functional Requirements</a></li>
+      <li><a href="#en8"><span>08</span>Workflows</a></li>
+      <li><a href="#en9"><span>09</span>Access &amp; Confidentiality</a></li>
+      <li><a href="#en10"><span>10</span>Completeness Engine</a></li>
+      <li><a href="#en11"><span>11</span>Evidence Integrity</a></li>
+      <li><a href="#en12"><span>12</span>Reporting, Export &amp; BI</a></li>
+      <li><a href="#en13"><span>13</span>Security &amp; Governance</a></li>
+      <li><a href="#en14"><span>14</span>Constraints</a></li>
+      <li><a href="#en15"><span>15</span>Roadmap</a></li>
+      <li><a href="#en16"><span>16</span>Open Points</a></li>
+    </ol>
+  </div>
+
+  <section id="en0">
+    <div class="sec-head"><span class="sec-n">00</span><h2>Hypotheses &amp; Decisions</h2></div>
+    <p class="prose">Every structuring choice is logged here for transparency. Items marked <span class="badge b-val">VALIDATED</span> were confirmed. Items marked <span class="badge b-prop">PROPOSED</span> are starter assumptions to validate before build.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:52px;">Ref</th><th>Decision</th><th style="width:96px;">Status</th><th style="width:130px;">Source</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">D-1</td><td><strong>Source of truth is a reconciliation layer.</strong> Each stakeholder keeps their own register; the tool unifies, traces and lets the whole be challenged.</td><td><span class="badge b-val">VALIDATED</span></td><td>Direction + Vittorio</td></tr>
+        <tr><td class="mono">D-2</td><td>Capture grain is <strong>the invoice</strong>. One entry equals one expense with 1 to N supporting documents.</td><td><span class="badge b-val">VALIDATED</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-3</td><td>Every cost line carries a <strong>cost code</strong>, in addition to its 5.2.1.x category.</td><td><span class="badge b-val">VALIDATED</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-4</td><td><strong>Two-level validation</strong>: owner enters, consolidator validates.</td><td><span class="badge b-val">VALIDATED</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-5</td><td><strong>Multi-currency</strong>, with a documented FX rate and source.</td><td><span class="badge b-val">VALIDATED</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-6</td><td>Stakeholder split: Finance, HR/Payroll, Procurement, Site Admin, IT.</td><td><span class="badge b-val">VALIDATED</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-7</td><td>Volume in the <strong>thousands of lines</strong>, so bulk import is in scope.</td><td><span class="badge b-val">VALIDATED</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-8</td><td>Contributors have <strong>accounts with roles</strong>.</td><td><span class="badge b-val">VALIDATED</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-9</td><td>The pilot starts <strong>empty</strong>, with no historical backlog.</td><td><span class="badge b-val">VALIDATED</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-10</td><td><strong>AI-assisted PDF extraction and BI dashboards deferred to Phase 2.</strong> The solution is designed from the start to host them and to be Power BI compatible.</td><td><span class="badge b-val">VALIDATED</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">D-11</td><td><strong>Compliance (cyber / CDS) runs in parallel</strong>, without blocking the design. Production with real HR data is gated on CDS sign-off; the pilot may run on test data.</td><td><span class="badge b-val">VALIDATED</span></td><td>Damien</td></tr>
+        <tr><td class="mono">H-A</td><td><strong>Neutral ledger, assembled claim.</strong> The ledger records all costs neutrally. A claim event does not absorb costs; a selection links it to the ledger lines it claims. One line can serve zero, one or several events.</td><td><span class="badge b-val">VALIDATED</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">H-B</td><td><strong>Eligibility is contextual.</strong> It is decided per person and per event, not as a global label. A person carries stable attributes (expat or local, role); what is claimable is decided at the event.</td><td><span class="badge b-val">VALIDATED</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">H-C</td><td><strong>Person is a first-class entity</strong>, and an invoice can be split per person, so nominative filtering is operational.</td><td><span class="badge b-val">VALIDATED</span></td><td>Vittorio</td></tr>
+        <tr><td class="mono">H-D</td><td><strong>HR data isolation.</strong> Names, payroll and salary detail are restricted to authorized roles, enforced on the data itself, with an unalterable access history.</td><td><span class="badge b-val">VALIDATED</span></td><td>Damien</td></tr>
+        <tr><td class="mono">A-1</td><td>Per-category supporting-document completeness rules (see section 10). Starter set, to validate with Damien, Nicolas, Sharizal, Racim and Simon.</td><td><span class="badge b-prop">PROPOSED</span></td><td>Proposal</td></tr>
+        <tr><td class="mono">A-2</td><td>Desktop only. No mobile or offline support.</td><td><span class="badge b-prop">PROPOSED</span></td><td>Vittorio</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section id="en1">
+    <div class="sec-head"><span class="sec-n">01</span><h2>Context &amp; Problem</h2></div>
+    <div class="grid2">
+      <div>
+        <p>Colas Rail needs to substantiate EOT-related cost claims on its rail contracts. The recoverable cost heads are defined by the contract (clause 5.2.1: indirect personnel, bonds and insurances, accommodation, office rental and utilities, IT licenses, site offices and warehouses, transport, plant and equipment, head office overheads, financing, profit).</p>
+        <p>Today the data is fragmented. Each stakeholder keeps their own register, in their own format. Supporting documents are scattered. When a contractual event occurs and a claim has to be built, costs and evidence are reassembled under pressure, and gaps surface too late.</p>
+        <p>A claim is built by comparing the baseline programme against the impacted programme, analysing resource mobilisation deltas (forecast, actual, mobilised), then deciding what is claimable. Eligibility is decided largely on the names of the people on the invoices (expat or local, eligible or not). Without a complete, traceable, tamper-evident evidence trail, claimable cost is lost or challenged.</p>
+      </div>
+      <div class="callout">
+        <div class="lbl">The real product</div>
+        <p>This is not a cost database. It is an evidence-substantiation system. Its job is to guarantee that, on the day a claim is submitted, every amount has a dated, traceable, unaltered document behind it. Completeness of evidence and chain of custody are what win or lose a claim.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="en2">
+    <div class="sec-head"><span class="sec-n">02</span><h2>Objectives &amp; Success Criteria</h2></div>
+    <div class="grid2">
+      <div>
+        <h4 class="sub">Objectives</h4>
+        <ul class="clean">
+          <li>Collect EOT-related costs continuously, month by month, from all stakeholders into one place.</li>
+          <li>Tie every cost to its supporting documents, with a completeness check per category.</li>
+          <li>Keep the ledger neutral and test any contractual event against it to isolate claimable lines.</li>
+          <li>Protect confidential HR data behind strict role-based access.</li>
+          <li>Make all costs and metadata explorable, filterable and exportable.</li>
+          <li>Feed a secure database that exposes a read-only access for Power BI.</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="sub">Pilot success criteria</h4>
+        <ul class="clean">
+          <li>One full period collected end to end, across at least three category clusters, documents attached and validated.</li>
+          <li>The completeness engine correctly flags a deliberate gap (missing entry, missing document, expired SLA).</li>
+          <li>One claim assembled from the ledger with per-person eligibility.</li>
+          <li>A filtered export produced from a metadata selection.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="en3">
+    <div class="sec-head"><span class="sec-n">03</span><h2>Scope</h2></div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:34%;">In scope (Phase 1)</th><th style="width:33%;">Deferred (Phase 2)</th><th>Out of scope</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Cost ledger, manual capture and bulk import. Document upload and integrity. Two-level validation. Per-person breakdown and nominative filtering. Claim assembly. Role-based access and HR isolation. Completeness and audit engine. Reminders. Filtered export. Read-only BI access.</td>
+          <td>AI-assisted extraction from PDF invoices (human validated). Power BI dashboards. AI agent for natural-language querying of the ledger.</td>
+          <td>Replacing accounting or the ERP. Building the planning gap analysis (input from the claim team). Mobile and offline use. Direct integration with Engineer or client systems.</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:13px;"><strong>Pilot boundary.</strong> One contract, empty start, a limited set of categories and contributors, test or anonymised data until CDS clearance allows real HR data. The architecture supports multi-contract; the pilot runs on one.</p>
+  </section>
+
+  <section id="en4">
+    <div class="sec-head"><span class="sec-n">04</span><h2>Core Concept: Ledger vs Claim</h2></div>
+    <p class="prose">The system separates two objects. This separation gives both a continuous register and per-event claim logic, without building a parallel accounting system.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:170px;">Object</th><th>Role</th><th style="width:180px;">Nature</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Cost Ledger</strong></td><td>Records everything continuously and neutrally. One invoice equals one entry, with person, cost code, 5.2.1.x category, period, amount and documents.</td><td>The exhaustive source of truth</td></tr>
+        <tr><td><strong>Claim Event</strong></td><td>Selects from the ledger the lines claimable for a given contractual event, each with its eligibility basis.</td><td>A dossier assembled on top</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="chain">
+      <div class="chain-row">
+        <div class="chain-box"><div class="n">Cost entry</div><div class="s">one invoice<br>1 to N documents</div></div>
+        <div class="chain-arrow">&rarr;</div>
+        <div class="chain-box"><div class="n">Cost lines</div><div class="s">split per person<br>or per item</div></div>
+        <div class="chain-arrow">&rarr;</div>
+        <div class="chain-box"><div class="n">Claim selection</div><div class="s">eligible lines<br>eligibility recorded</div></div>
+        <div class="chain-arrow">&rarr;</div>
+        <div class="chain-box out"><div class="n">Claim event</div><div class="s">contractual event<br>the assembled dossier</div></div>
+      </div>
+      <div class="chain-note">The ledger knows nothing about claims. A claim event reaches into it. One line can serve zero, one or many events.</div>
+    </div>
+  </section>
+
+  <section id="en5">
+    <div class="sec-head"><span class="sec-n">05</span><h2>Stakeholders &amp; Roles</h2></div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:210px;">Stakeholder</th><th>Responsibility</th><th style="width:140px;">Categories</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Nicolas Durame</strong><br><span style="color:var(--muted);font-size:12px;">Director, Contract Management</span></td><td>Owns the EOT claim strategy and decides what is claimable. Defines contractual events. Business owner of the solution and recipient of decisions.</td><td>steering</td></tr>
+        <tr><td><strong>Damien Prost</strong><br><span style="color:var(--muted);font-size:12px;">CFO Asia</span></td><td>Finance sponsor, budget, data confidentiality, siège and CDS validation path.</td><td>oversight</td></tr>
+        <tr><td><strong>Mohd Sharizal Isa</strong><br><span style="color:var(--muted);font-size:12px;">Cost Controller / Finance Control Supervisor</span></td><td>Currently runs the EOT cost collection process (today in SharePoint). Former contract profile, now on the finance side: reference for the subject, the completeness rules and the cost list.</td><td>process reference</td></tr>
+        <tr><td>Finance</td><td>Records financing, head office overheads, bonds. Provides the FX source.</td><td class="mono">5.2.1.2, .9, .10</td></tr>
+        <tr><td>HR / Payroll</td><td>Records indirect personnel and accommodation. Owns nominative payroll detail.</td><td class="mono">5.2.1.1, .3</td></tr>
+        <tr><td>Procurement</td><td>Records insurances, permits and licenses, plant and equipment, transport.</td><td class="mono">5.2.1.2, .7, .8</td></tr>
+        <tr><td>Site Admin</td><td>Records office rental and utilities, site offices and warehouses.</td><td class="mono">5.2.1.4, .6</td></tr>
+        <tr><td>IT</td><td>Records IT software licenses.</td><td class="mono">5.2.1.5</td></tr>
+        <tr><td>Consolidator / QS</td><td>Validates entries, runs the monthly review, assembles claims (under Nicolas's direction).</td><td>all (validate)</td></tr>
+        <tr><td>Auditor</td><td>Monthly completeness and conformity audit. Read access to evidence.</td><td>all (read)</td></tr>
+        <tr><td>Racim, Simon</td><td>Validate the cost items and resource list, support the claim justification tables.</td><td>review</td></tr>
+        <tr><td>Christophe + siège, Jean</td><td>Digital Factory coherence and head-office sign-off.</td><td>governance</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:12.5px;color:var(--muted);">Where two stakeholders touch the same cost head (for example bonds and insurances), ownership is split by document type and confirmed during P0.</p>
+  </section>
+
+  <section id="en6">
+    <div class="sec-head"><span class="sec-n">06</span><h2>What the Solution Captures</h2></div>
+    <div class="cards">
+      <div class="ent"><div class="name">Cost</div><p class="desc">Each invoice or expense, with its category, period, cost code and amount.</p></div>
+      <div class="ent"><div class="name">Supporting evidence</div><p class="desc">One or more documents that prove each cost.</p></div>
+      <div class="ent"><div class="name">People</div><p class="desc">Staff tracked individually, to attribute costs per person (nominative eligibility).</p></div>
+      <div class="ent"><div class="name">Periods</div><p class="desc">The monthly cycle. A period closes once reviewed.</p></div>
+      <div class="ent"><div class="name">Contractual events</div><p class="desc">The events that select claimable lines from the ledger.</p></div>
+      <div class="ent"><div class="name">History</div><p class="desc">An unalterable trace of every entry, change and validation.</p></div>
+    </div>
+  </section>
+
+  <section id="en7">
+    <div class="sec-head"><span class="sec-n">07</span><h2>Functional Requirements</h2></div>
+    <p class="prose">Traceability against the brief. Collection requirements C1 to C11, processing requirement T1.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:48px;">Ref</th><th>Requirement</th><th>What we deliver</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">C1</td><td>Record all claim-related costs with supporting documents.</td><td>Each expense recorded with its documents (1 to N).</td></tr>
+        <tr><td class="mono">C2</td><td>Supporting documents are the priority.</td><td>Document mandatory on submit, completeness checked per category.</td></tr>
+        <tr><td class="mono">C3</td><td>Monthly updates from several stakeholders.</td><td>Monthly cycle, per-category ownership, role accounts.</td></tr>
+        <tr><td class="mono">C4</td><td>Automatic control or regular audit of the flow.</td><td>Scheduled completeness engine and monthly audit review.</td></tr>
+        <tr><td class="mono">C5</td><td>Verify exhaustiveness of supports.</td><td>Completeness matrix (category &times; period &times; owner) with per-category document rules.</td></tr>
+        <tr><td class="mono">C6</td><td>Dig into all metadata, by category and metric.</td><td>All metadata explorable and filterable, Power BI compatible in Phase 2.</td></tr>
+        <tr><td class="mono">C7</td><td>Automatic notifications and reminders.</td><td>Reminders before cutoff, overdue and pending-validation alerts.</td></tr>
+        <tr><td class="mono">C8</td><td>Highly intuitive dashboard.</td><td>Operational dashboard: what is missing, who is late, distance to a complete claim.</td></tr>
+        <tr><td class="mono">C9</td><td>Secure database with a key callable by Power BI.</td><td>Secure database exposing a controlled read-only access for Power BI.</td></tr>
+        <tr><td class="mono">C10</td><td>Desktop only.</td><td>Desktop app, no mobile or offline.</td></tr>
+        <tr><td class="mono">C11</td><td>Easy export after a metadata selection.</td><td>Filtered export (CSV, Excel) from a selection.</td></tr>
+        <tr><td class="mono">T1</td><td>Extract key data from dropped PDF invoices into the database.</td><td>Phase 2: assisted extraction, human-checked before commit.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section id="en8">
+    <div class="sec-head"><span class="sec-n">08</span><h2>Workflows</h2></div>
+    <div class="grid2">
+      <div>
+        <h3>W1 &nbsp; Capture (continuous)</h3>
+        <p>A contributor opens the current period, creates an entry in a category they own, fills amount, currency and cost code, attaches one or more documents, splits the entry per person if needed, then submits. Entries can also be bulk imported (Excel, CSV).</p>
+        <h3>W2 &nbsp; Validation (two levels)</h3>
+        <p>The contributor submits. The consolidator reviews then validates or rejects with a reason. On validation the entry locks and the action is logged. The period locks after its monthly review.</p>
+        <h3>W3 &nbsp; Claim assembly</h3>
+        <p>The consolidator creates a claim event (window, affected sections, baseline and impacted references). They query the ledger filtered by window, category and person, select the lines, record each eligibility basis, then confirm. The result is a claim dossier backed by live ledger evidence.</p>
+      </div>
+      <div>
+        <h3>W4 &nbsp; Audit and completeness</h3>
+        <p>A scheduled job computes the completeness matrix and integrity checks, then raises flags and notifications. A dedicated auditor runs a monthly conformity review on top.</p>
+        <h3>W5 &nbsp; PDF extraction (Phase 2)</h3>
+        <p>A dropped PDF is read into a record awaiting review. The owner checks the extracted fields against the document, corrects, then commits the entry with its document.</p>
+        <div class="callout crit" style="margin-top:16px;">
+          <div class="lbl">Non-negotiable</div>
+          <p>Financial claim data is never auto-committed. A wrong amount injected automatically destroys credibility with the Engineer. The machine assists, a human commits.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="en9">
+    <div class="sec-head"><span class="sec-n">09</span><h2>Access &amp; Confidentiality</h2></div>
+    <p class="prose">This section answers the requirement on HR confidentiality and restrictive access.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:160px;">Role</th><th>Sees</th><th>Can do</th></tr></thead>
+      <tbody>
+        <tr><td>Admin</td><td>Everything</td><td>Manage users, categories, periods. No edit of the audit history.</td></tr>
+        <tr><td>Contributor</td><td>Own categories only. Own nominative detail if HR.</td><td>Create and edit own drafts, attach documents, submit.</td></tr>
+        <tr><td>Consolidator</td><td>All categories, all nominative detail.</td><td>Validate, reject, lock periods, assemble claims.</td></tr>
+        <tr><td>Auditor</td><td>All entries and evidence, nominative detail.</td><td>Read only. Monthly review.</td></tr>
+        <tr><td>Viewer</td><td>Aggregates only, no nominative detail.</td><td>Read aggregates and dashboards.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <ul class="cols2">
+      <li>Nominative data (people, payroll) is restricted to HR, consolidator, auditor and admin roles.</li>
+      <li>Restrictions are enforced on the data itself, not just hidden in the interface.</li>
+      <li>Every access to sensitive data and every edit is logged.</li>
+      <li>Least privilege throughout. The read-only BI access cannot see raw nominative data unless explicitly granted.</li>
+    </ul>
+  </section>
+
+  <section id="en10">
+    <div class="sec-head"><span class="sec-n">10</span><h2>Completeness Engine</h2></div>
+    <p class="prose">This is the real product. The engine computes a category &times; period &times; owner matrix and applies rules.</p>
+    <div class="rag"><span class="dot r"></span><span>Category with no entry this period. Entry with an amount but no document. A document fingerprint has changed.</span></div>
+    <div class="rag"><span class="dot a"></span><span>Entry submitted but not validated past its SLA. Document date outside the period. A document type required by the category rule is missing.</span></div>
+    <div class="rag"><span class="dot g"></span><span>Entry validated, documents complete per the rule, integrity intact.</span></div>
+    <h4 class="sub">Default completeness rules per category (A-1, to validate)</h4>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:250px;">Category</th><th>Minimum documents for "complete"</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">5.2.1.1 Indirect Personnel</td><td>Payslip plus employment proof, per person. Timesheet if time-apportioned.</td></tr>
+        <tr><td class="mono">5.2.1.2 Bonds, Insurances, Permits, Licenses</td><td>Policy or certificate, invoice, payment proof.</td></tr>
+        <tr><td class="mono">5.2.1.3 Staff Accommodation</td><td>Lease or contract, monthly invoice, payment proof. Per person if apportioned.</td></tr>
+        <tr><td class="mono">5.2.1.4 Office Rental &amp; Utilities</td><td>Lease or contract, invoice, payment proof.</td></tr>
+        <tr><td class="mono">5.2.1.5 IT Software Licenses</td><td>Invoice or subscription, payment proof.</td></tr>
+        <tr><td class="mono">5.2.1.6 Site Offices &amp; Warehouses</td><td>Rental agreement, invoice, payment proof.</td></tr>
+        <tr><td class="mono">5.2.1.7 Transport</td><td>Contract or PO, invoice, payment proof. Driver or vehicle assignment if nominative.</td></tr>
+        <tr><td class="mono">5.2.1.8 Plant &amp; Equipment</td><td>Rental or purchase invoice, payment proof. On-hire and off-hire or log sheet.</td></tr>
+        <tr><td class="mono">5.2.1.9 Head Office Overheads</td><td>Allocation basis or calculation, supporting ledger extract.</td></tr>
+        <tr><td class="mono">5.2.1.10 Financing Costs</td><td>Facility statement, interest calculation, bank proof.</td></tr>
+        <tr><td class="mono">5.2.1.11 Profit</td><td>Computed percentage per the contract mechanism. No invoice, formula reference.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section id="en11">
+    <div class="sec-head"><span class="sec-n">11</span><h2>Evidence Integrity</h2></div>
+    <div class="grid2">
+      <div>
+        <ul class="clean">
+          <li>Each document is fingerprinted on upload. Any later change is detectable.</li>
+          <li>Write-once retention: a correction adds a new version, it never overwrites.</li>
+          <li>A re-computed fingerprint that no longer matches raises an integrity flag.</li>
+          <li>The full history lets the team prove, in a dispute, that no document was altered or back-dated.</li>
+        </ul>
+      </div>
+      <div class="callout warn">
+        <div class="lbl">Why it matters</div>
+        <p>Many contracts require contemporaneous records, sometimes kept in a form agreed with the Engineer. Whether the format needs client agreement is a commercial question to confirm. Good contemporaneous records can themselves be a contractual obligation.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="en12">
+    <div class="sec-head"><span class="sec-n">12</span><h2>Reporting, Export &amp; BI</h2></div>
+    <ul class="cols2">
+      <li><strong>Operational dashboard</strong>: completeness (RAG), totals to date by category and period, late owners, claim coverage.</li>
+      <li><strong>Filtered export</strong>: select on any metadata (category, period, contributor, supplier, document type, amount band, status) then export to CSV or Excel.</li>
+      <li><strong>BI access</strong>: a controlled read-only access feeds Power BI, away from raw nominative data unless granted.</li>
+      <li><strong>Pre-built views</strong> for the most frequent slices.</li>
+    </ul>
+  </section>
+
+  <section id="en13">
+    <div class="sec-head"><span class="sec-n">13</span><h2>Security &amp; Governance</h2></div>
+    <p class="prose">Compliance runs as a parallel workstream so it does not block the design. The build proceeds compliance-ready while validation runs.</p>
+    <ul class="cols2">
+      <li>HR isolation by role, unalterable access history, least privilege (section 9).</li>
+      <li>Data residency: the hosting region is to confirm with CDS (a European region is the likely option).</li>
+      <li>CDS and siège validation path: steered through Damien, with Jean and Christophe for Digital Factory coherence. Sharizal, Racim and Simon validate the cost and resource list.</li>
+      <li>Production with real HR data is gated on CDS sign-off. The pilot can run on test data until then.</li>
+      <li>The solution hosts confidential HR and financial data. It is treated as sensitive from the start, not retrofitted.</li>
+    </ul>
+  </section>
+
+  <section id="en14">
+    <div class="sec-head"><span class="sec-n">14</span><h2>Constraints</h2></div>
+    <ul class="cols2">
+      <li>Desktop only, optimised for a wide screen.</li>
+      <li>Thousands of lines: the tool stays performant at that volume.</li>
+      <li>Bulk import from Excel or CSV for entries, with a validation preview before commit.</li>
+      <li>Multi-currency with documented FX rate and source, all amounts also stored in PHP.</li>
+      <li>Keyboard accessible, visible focus, reduced motion respected.</li>
+    </ul>
+  </section>
+
+  <section id="en15">
+    <div class="sec-head"><span class="sec-n">15</span><h2>Roadmap</h2></div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:60px;">Phase</th><th>Content</th><th style="width:200px;">Gate</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">P0</td><td>Lock the taxonomy, cost codes, completeness rules and RACI.</td><td>Nicolas, Damien, Sharizal, Racim, Simon</td></tr>
+        <tr><td class="mono">P1</td><td>Validated visual prototype. Also serves as the internal presentation material.</td><td>Vittorio sign-off</td></tr>
+        <tr><td class="mono">P2</td><td>Capture and cost ledger.</td><td>One entry end to end</td></tr>
+        <tr><td class="mono">P3</td><td>Secure foundation and access control.</td><td>Integrity test</td></tr>
+        <tr><td class="mono">P4</td><td>Validation and bulk import.</td><td>Two-level validation</td></tr>
+        <tr><td class="mono">P5</td><td>Completeness engine and dashboard.</td><td>A gap is caught</td></tr>
+        <tr><td class="mono">P6</td><td>Claim assembly and nominative eligibility.</td><td>One claim assembled</td></tr>
+        <tr><td class="mono">P7</td><td>Export and BI access.</td><td>Export from a selection</td></tr>
+        <tr><td class="mono">P8</td><td>Pilot on one period, one cluster, test data.</td><td>Full loop validated</td></tr>
+        <tr><td class="mono">P9+</td><td>Phase 2: PDF extraction, Power BI dashboards, AI query agent.</td><td>After the pilot</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section id="en16">
+    <div class="sec-head"><span class="sec-n">16</span><h2>Open Points &amp; Dependencies</h2></div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:48px;">Ref</th><th>Question</th><th style="width:180px;">Owner</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">O-1</td><td>CDS validation timeline and hosting region. Can the pilot run on real data or must it use test data first.</td><td>Damien, CDS</td></tr>
+        <tr><td class="mono">O-2</td><td>Validate the full cost and resource list against the contract, confirm the cost code nomenclature.</td><td>Nicolas, Damien, Sharizal, Racim, Simon</td></tr>
+        <tr><td class="mono">O-3</td><td>Confirm the per-category completeness rules (A-1).</td><td>Nicolas, Sharizal, Racim</td></tr>
+        <tr><td class="mono">O-4</td><td>Single source for the FX rate and its documentation.</td><td>Finance</td></tr>
+        <tr><td class="mono">O-5</td><td>Who is the dedicated monthly auditor.</td><td>Nicolas, Damien</td></tr>
+        <tr><td class="mono">O-6</td><td>Source and format of the baseline versus impacted planning analysis that feeds claim events.</td><td>Claim team, Racim</td></tr>
+        <tr><td class="mono">O-7</td><td>Whether the record format needs agreement with the Engineer or client.</td><td>Contract Management</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <div class="footer">
+    <span>EOT Claim Vault — Specification v0.2</span>
+    <span>Draft for validation · 18 June 2026 · Confidential</span>
+  </div>
+
+</div>
+
+<script>
+  function setLang(l){
+    document.getElementById('doc-fr').style.display = (l==='fr') ? 'block' : 'none';
+    document.getElementById('doc-en').style.display = (l==='en') ? 'block' : 'none';
+    document.getElementById('btn-fr').classList.toggle('active', l==='fr');
+    document.getElementById('btn-en').classList.toggle('active', l==='en');
+    document.documentElement.lang = l;
+    window.scrollTo(0, 0);
+  }
+</script>
+</body>
+</html>
